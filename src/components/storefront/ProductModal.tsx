@@ -3,7 +3,7 @@ import type { Product } from '@/lib/types';
 import { useStore } from '@/lib/store';
 import { formatEur, checkRiskKeywords, checkParcelDimensions, checkParcelWeight } from '@/lib/pricing';
 import { calculateChinedPrice, type FreightMode } from '@/lib/bundleBuilder';
-import { X, ShoppingBag, AlertTriangle, ExternalLink, Ruler, Palette, Languages } from 'lucide-react';
+import { X, ShoppingBag, AlertTriangle, ExternalLink, Ruler, Palette, Languages, PackageCheck, Clock } from 'lucide-react';
 
 interface Props {
   product: Product | null;
@@ -18,7 +18,7 @@ const MERCHANT_BADGE: Record<string, { label: string; class: string }> = {
 };
 
 export default function ProductModal({ product, onClose }: Props) {
-  const { settings, addToCart, transportMode } = useStore();
+  const { settings, addToCart, transportMode, addProcurementRequest, customerUser } = useStore();
   const [size, setSize] = useState('');
   const [color, setColor] = useState('');
   const [quantity, setQuantity] = useState(1);
@@ -29,6 +29,7 @@ export default function ProductModal({ product, onClose }: Props) {
   const dimBlock = checkParcelDimensions(product, settings);
   const weightBlock = checkParcelWeight(product, settings);
   const isBlocked = risk.blocked || dimBlock.blocked || weightBlock.blocked;
+  const inStock = product.inStock;
 
   const price = calculateChinedPrice(product.priceRmb, settings.rmbToEurRate, product.weightKg, product.lengthCm, product.widthCm, product.heightCm, transportMode as FreightMode, {
     airRatePerKg: settings.airRatePerKg, railRatePerKg: settings.railRatePerKg, b2bDutyPct: settings.b2bDutyPct, dutchVatPct: settings.dutchVatPct,
@@ -56,13 +57,18 @@ export default function ProductModal({ product, onClose }: Props) {
           <div className="grid md:grid-cols-2 gap-0">
             <div className="relative aspect-square bg-slate-50 overflow-hidden rounded-l-2xl">
               <img src={product.imageUrl} alt={product.titleNl} className="w-full h-full object-cover" />
-              <div className="absolute top-3 left-3 flex gap-2">
+              <div className="absolute top-3 left-3 flex flex-wrap gap-2">
                 <span className={`text-xs font-semibold px-3 py-1.5 rounded-full ${MERCHANT_BADGE[product.merchant].class}`}>
                   {MERCHANT_BADGE[product.merchant].label}
                 </span>
                 <span className="text-xs font-medium px-3 py-1.5 rounded-full bg-white/90 text-slate-600 backdrop-blur">
                   {product.category}
                 </span>
+                {inStock ? (
+                  <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-emerald-500 text-white flex items-center gap-1"><PackageCheck className="w-3.5 h-3.5" /> Op voorraad (1-2 dagen)</span>
+                ) : (
+                  <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-blue-500 text-white flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> Rotterdam-drop aanvraag</span>
+                )}
               </div>
             </div>
 
@@ -141,14 +147,32 @@ export default function ProductModal({ product, onClose }: Props) {
               )}
 
               <button
-                disabled={isBlocked}
+                disabled={isBlocked || !inStock}
                 onClick={handleAdd}
                 className={`w-full py-3 rounded-xl font-semibold text-sm transition-colors flex items-center justify-center gap-2 ${
-                  isBlocked ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-orange-600 hover:bg-orange-700 text-white shadow-md'
+                  isBlocked ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : inStock ? 'bg-orange-600 hover:bg-orange-700 text-white shadow-md' : 'bg-slate-100 text-slate-400 cursor-not-allowed'
                 }`}
               >
-                <ShoppingBag className="w-5 h-5" /> {isBlocked ? 'Niet beschikbaar' : 'Voeg toe aan mijn ChiNed Bundel'}
+                <ShoppingBag className="w-5 h-5" /> {isBlocked ? 'Niet beschikbaar' : inStock ? 'Voeg toe aan mijn ChiNed Bundel' : 'Niet op voorraad'}
               </button>
+              {!inStock && !isBlocked && (
+                <button
+                  onClick={() => {
+                    addProcurementRequest({
+                      id: `req-${Date.now()}`,
+                      createdAt: new Date().toISOString(),
+                      customerName: customerUser?.name,
+                      customerEmail: customerUser?.email,
+                      items: [{ id: `bbi-${Date.now()}`, url: product.originalUrl, priceEur: chinedPrice, currency: 'EUR', photoDataUrl: '', detectedWeightKg: product.weightKg, detectedCategory: product.category, chinedAllInEur: chinedPrice, source: 'lookup-request' }],
+                      status: 'Nieuw',
+                    });
+                    onClose();
+                  }}
+                  className="mt-2 w-full py-3 rounded-xl font-semibold text-sm bg-blue-600 hover:bg-blue-700 text-white transition-colors flex items-center justify-center gap-2"
+                >
+                  <Clock className="w-5 h-5" /> Vraag aan voor Rotterdam-drop (vrijblijvend)
+                </button>
+              )}
 
               <a
                 href={product.merchant === '1688' ? `https://translate.google.com/translate?sl=zh-CN&tl=nl&u=${encodeURIComponent(factoryUrl)}` : factoryUrl}

@@ -32,7 +32,7 @@ export default function MyAccount({ onNavigate }: Props) {
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-2xl font-bold text-slate-900 mb-2">Mijn Account</h1>
-        <p className="text-sm text-slate-500 mb-6">Bekijk je bestellingen, volg je pakketten en beheer je Community Fonds inleg.</p>
+        <p className="text-sm text-slate-500 mb-6">Bekijk je bestellingen, volg je pakketten en beheer je ChiNed Retour-Spaarpot.</p>
 
         <div className="mb-6 flex flex-col sm:flex-row gap-3">
           <input
@@ -48,25 +48,25 @@ export default function MyAccount({ onNavigate }: Props) {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <KpiCard icon={<Wallet className="w-5 h-5" />} title="Jouw persoonlijke inleg" value={formatEur(personalDeposit)} color="text-blue-600 bg-blue-50" />
+          <KpiCard icon={<Wallet className="w-5 h-5" />} title="Jouw Retour-Spaarpot" value={formatEur(personalDeposit)} color="text-blue-600 bg-blue-50" />
           <KpiCard icon={<Shield className="w-5 h-5" />} title="Schadevrij status" value={hasReturns ? 'Retour ingediend' : '100% Voorrang'} color={hasReturns ? 'text-amber-600 bg-amber-50' : 'text-emerald-600 bg-emerald-50'} />
           <KpiCard icon={<TrendingUp className="w-5 h-5" />} title="Verwachte uitkering" value={formatEur(expectedPayout)} color="text-orange-600 bg-orange-50" />
-          <KpiCard icon={<Package className="w-5 h-5" />} title="Community Fonds totaal" value={formatEur(netPoolBalance)} color="text-purple-600 bg-purple-50" />
+          <KpiCard icon={<Package className="w-5 h-5" />} title="Spaarpot totaal" value={formatEur(netPoolBalance)} color="text-purple-600 bg-purple-50" />
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-5 mb-6">
-          <h2 className="text-sm font-bold text-slate-900 mb-3">Community Retourfonds Dashboard</h2>
+          <h2 className="text-sm font-bold text-slate-900 mb-3">ChiNed Retour-Spaarpot Dashboard</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-            <StatItem label="Totale inleg (collectief)" value={formatEur(totalPoolInflow)} />
+            <StatItem label="Totale spaarpot (collectief)" value={formatEur(totalPoolInflow)} />
             <StatItem label="Afschrijvingen (retouren)" value={formatEur(totalPoolDepreciation)} />
-            <StatItem label="Netto fonds balans" value={formatEur(netPoolBalance)} />
+            <StatItem label="Netto spaarpot balans" value={formatEur(netPoolBalance)} />
             <StatItem label="Claim ratio" value={`${totalPoolInflow > 0 ? ((totalPoolDepreciation / totalPoolInflow) * 100).toFixed(1) : 0}%`} />
           </div>
           <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
             <p className="text-xs text-emerald-700">
-              <strong>Schadevrij-Voorrangsregel:</strong> {hasReturns
-                ? 'Je hebt dit jaar een retour ingediend. Je ontvangt een pro-rata uitkering van het resterende fonds.'
-                : 'Je hebt 0 retouren in de afgelopen 12 maanden! Je krijgt voorrang en ontvangt 100% van je inleg terug, plus 10% bonus als ChiNed shoptegoed, of 100% als contante uitbetaling.'}
+              <strong>ChiNed Retour-Spaarpot:</strong> {hasReturns
+                ? 'Je hebt dit jaar een retour ingediend. Je ontvangt wettelijk 100% van je aankoopbedrag terug binnen 14 dagen.'
+                : 'Je hebt 0 retouren in de afgelopen 12 maanden! Je ontvangt de opgebouwde spaarpot + 10% bonus als ChiNed shoptegoed, of 100% als contante uitbetaling.'}
             </p>
           </div>
         </div>

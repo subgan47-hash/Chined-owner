@@ -111,6 +111,7 @@ export function mapOneBoundItemToProduct(item: OneBoundItem): Product {
     colors: ['Standaard'],
     originalUrl: item.detail_url || `https://detail.1688.com/offer/${item.num_iid}.html`,
     qcInstructionEn: 'QC: check product quality, quantity, and packaging before shipping.',
+    inStock: false,
   };
 }
 

@@ -34,7 +34,6 @@ export default function Footer({ onNavigate }: Props) {
               <li><button onClick={() => onNavigate('faq')} className="hover:text-orange-400 transition-colors">FAQ</button></li>
               <li><button onClick={() => onNavigate('track')} className="hover:text-orange-400 transition-colors">Bestelling volgen</button></li>
               <li><button onClick={() => onNavigate('account')} className="hover:text-orange-400 transition-colors">Mijn Account</button></li>
-              <li><button onClick={() => onNavigate('terms')} className="hover:text-orange-400 transition-colors">Algemene Voorwaarden</button></li>
             </ul>
           </div>
 

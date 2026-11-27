@@ -18,6 +18,7 @@ export interface Product {
   colors: string[];
   originalUrl: string;
   qcInstructionEn: string;
+  inStock: boolean;
 }
 
 export interface CustomerUser {
@@ -222,7 +223,7 @@ export interface ProcurementRequest {
   customerName?: string;
   customerEmail?: string;
   items: BundleBuilderItem[];
-  status: 'Nieuw' | 'In Opzoek' | 'Offerte Verzonden' | 'Geaccepteerd';
+  status: 'Nieuw' | 'In Review' | 'Op Inkooplijst' | 'Op Voorraad in Rotterdam';
   admin1688PriceEur?: number;
   adminWeightKg?: number;
 }

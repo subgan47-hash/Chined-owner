@@ -9,6 +9,7 @@ export const SEED_PRODUCTS: Product[] = [
     imageUrl: 'https://images.pexels.com/photos/6747989/pexels-photo-6747989.jpeg?auto=compress&cs=tinysrgb&w=600',
     sizes: ['Standaard'], colors: ['Wit', 'Grijs'], originalUrl: 'https://detail.1688.com/offer/123456789.html',
     qcInstructionEn: 'Check box integrity, no cracks, all 3 pieces present, hinges functional.',
+    inStock: true,
   },
   {
     id: 'p1688-2', merchant: '1688', title: '硅胶厨房工具套装', titleNl: 'Siliconen keukengerei set (8 stuks)',
@@ -16,6 +17,7 @@ export const SEED_PRODUCTS: Product[] = [
     imageUrl: 'https://images.pexels.com/photos/4226806/pexels-photo-4226806.jpeg?auto=compress&cs=tinysrgb&w=600',
     sizes: ['Standaard'], colors: ['Rood', 'Blauw', 'Zwart'], originalUrl: 'https://detail.1688.com/offer/987654321.html',
     qcInstructionEn: 'Verify all 8 pieces, food-grade silicone, no odor, heat resistant stamp visible.',
+    inStock: true,
   },
   {
     id: 'p1688-3', merchant: '1688', title: '汽车手机支架', titleNl: 'Auto telefoonhouder ( universeel)',
@@ -23,6 +25,7 @@ export const SEED_PRODUCTS: Product[] = [
     imageUrl: 'https://images.pexels.com/photos/3786091/pexels-photo-3786091.jpeg?auto=compress&cs=tinysrgb&w=600',
     sizes: ['Standaard'], colors: ['Zwart'], originalUrl: 'https://detail.1688.com/offer/456789123.html',
     qcInstructionEn: 'Test suction cup adhesion, adjustable arm movement, no sharp edges.',
+    inStock: true,
   },
   {
     id: 'p1688-4', merchant: '1688', title: 'LED运动跳绳', titleNl: 'LED sport springtouw',
@@ -30,6 +33,7 @@ export const SEED_PRODUCTS: Product[] = [
     imageUrl: 'https://images.pexels.com/photos/4761357/pexels-photo-4761357.jpeg?auto=compress&cs=tinysrgb&w=600',
     sizes: ['2.5m', '2.8m'], colors: ['Blauw', 'Groen'], originalUrl: 'https://detail.1688.com/offer/147258369.html',
     qcInstructionEn: 'Check LED function, battery compartment, rope length markings.',
+    inStock: true,
   },
   // Shein (4 items - fashion)
   {
@@ -38,6 +42,7 @@ export const SEED_PRODUCTS: Product[] = [
     imageUrl: 'https://images.pexels.com/photos/7679720/pexels-photo-7679720.jpeg?auto=compress&cs=tinysrgb&w=600',
     sizes: ['S', 'M', 'L', 'XL'], colors: ['Bloemenprint', 'Wit'], originalUrl: 'https://www.shein.com/Summer-Floral-Dress-p-123456.html',
     qcInstructionEn: 'Check stitching, fabric quality, no loose threads, correct sizing label (Chinese sizes run 1-2 small).',
+    inStock: true,
   },
   {
     id: 'p-shein-2', merchant: 'shein', title: 'Casual Knit Sweater', titleNl: 'Casual gebreide trui',
@@ -45,6 +50,7 @@ export const SEED_PRODUCTS: Product[] = [
     imageUrl: 'https://images.pexels.com/photos/1183266/pexels-photo-1183266.jpeg?auto=compress&cs=tinysrgb&w=600',
     sizes: ['S', 'M', 'L', 'XL'], colors: ['Beige', 'Grijs', 'Zwart'], originalUrl: 'https://www.shein.com/Casual-Knit-Sweater-p-234567.html',
     qcInstructionEn: 'Verify knit consistency, no pilling, correct color match to order.',
+    inStock: true,
   },
   {
     id: 'p-shein-3', merchant: 'shein', title: 'Denim Mini Skirt', titleNl: 'Denim minirok',
@@ -52,6 +58,7 @@ export const SEED_PRODUCTS: Product[] = [
     imageUrl: 'https://images.pexels.com/photos/1755428/pexels-photo-1755428.jpeg?auto=compress&cs=tinysrgb&w=600',
     sizes: ['XS', 'S', 'M', 'L'], colors: ['Lichtblauw', 'Donkerblauw'], originalUrl: 'https://www.shein.com/Denim-Mini-Skirt-p-345678.html',
     qcInstructionEn: 'Check zipper function, denim quality, hem stitching.',
+    inStock: true,
   },
   {
     id: 'p-shein-4', merchant: 'shein', title: 'Oversized Cotton T-Shirt', titleNl: 'Oversized katoenen t-shirt',
@@ -59,6 +66,7 @@ export const SEED_PRODUCTS: Product[] = [
     imageUrl: 'https://images.pexels.com/photos/1656684/pexels-photo-1656684.jpeg?auto=compress&cs=tinysrgb&w=600',
     sizes: ['S', 'M', 'L', 'XL', 'XXL'], colors: ['Wit', 'Zwart', 'Groen'], originalUrl: 'https://www.shein.com/Oversized-Cotton-Tee-p-456789.html',
     qcInstructionEn: 'Check cotton weight (180gsm+), print quality if applicable, sizing label.',
+    inStock: true,
   },
   // Temu (4 items - living & gadgets)
   {
@@ -67,6 +75,7 @@ export const SEED_PRODUCTS: Product[] = [
     imageUrl: 'https://images.pexels.com/photos/1112598/pexels-photo-1112598.jpeg?auto=compress&cs=tinysrgb&w=600',
     sizes: ['Standaard'], colors: ['Wit', 'Zwart'], originalUrl: 'https://www.temu.com/goods-detail_123456.html',
     qcInstructionEn: 'Test USB power, brightness levels, LED color temperature, base stability.',
+    inStock: true,
   },
   {
     id: 'p-temu-2', merchant: 'temu', title: 'Ceramic Plant Pot Set', titleNl: 'Keramische plantenpotten set (3 stuks)',
@@ -74,6 +83,7 @@ export const SEED_PRODUCTS: Product[] = [
     imageUrl: 'https://images.pexels.com/photos/1084199/pexels-photo-1084199.jpeg?auto=compress&cs=tinysrgb&w=600',
     sizes: ['Klein', 'Medium', 'Groot'], colors: ['Wit', 'Terracotta'], originalUrl: 'https://www.temu.com/goods-detail_234567.html',
     qcInstructionEn: 'Check for cracks/chips, drainage holes present, consistent glaze finish.',
+    inStock: true,
   },
   {
     id: 'p-temu-3', merchant: 'temu', title: 'Smart LED Strip 5M', titleNl: 'Slimme LED-strip 5 meter (WiFi)',
@@ -81,6 +91,7 @@ export const SEED_PRODUCTS: Product[] = [
     imageUrl: 'https://images.pexels.com/photos/3330471/pexels-photo-3330471.jpeg?auto=compress&cs=tinysrgb&w=600',
     sizes: ['5m'], colors: ['RGB'], originalUrl: 'https://www.temu.com/goods-detail_345678.html',
     qcInstructionEn: 'Test all LEDs function, WiFi connectivity, remote control pairing, adhesive backing.',
+    inStock: true,
   },
   {
     id: 'p-temu-4', merchant: 'temu', title: 'Foldable Storage Ottoman', titleNl: 'Opvouwbare opbergpoef',
@@ -88,6 +99,7 @@ export const SEED_PRODUCTS: Product[] = [
     imageUrl: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=600',
     sizes: ['40x40cm'], colors: ['Grijs', 'Beige'], originalUrl: 'https://www.temu.com/goods-detail_456789.html',
     qcInstructionEn: 'Check folding mechanism, fabric tension, load capacity (min 80kg), no tears.',
+    inStock: true,
   },
   // AliExpress (4 items - tech & accessories)
   {
@@ -96,6 +108,7 @@ export const SEED_PRODUCTS: Product[] = [
     imageUrl: 'https://images.pexels.com/photos/4526473/pexels-photo-4526473.jpeg?auto=compress&cs=tinysrgb&w=600',
     sizes: ['EU-plug'], colors: ['Wit', 'Zwart'], originalUrl: 'https://www.aliexpress.com/item/65W-GaN-Charger_123456.html',
     qcInstructionEn: 'Test 65W output, EU plug format, CE marking present, no overheating under load.',
+    inStock: true,
   },
   {
     id: 'p-ali-2', merchant: 'aliexpress', title: 'Wireless Earbuds Pro', titleNl: 'Draadloze oordopjes Pro (Bluetooth 5.3)',
@@ -103,6 +116,7 @@ export const SEED_PRODUCTS: Product[] = [
     imageUrl: 'https://images.pexels.com/photos/3780681/pexels-photo-3780681.jpeg?auto=compress&cs=tinysrgb&w=600',
     sizes: ['Standaard'], colors: ['Wit', 'Zwart'], originalUrl: 'https://www.aliexpress.com/item/Wireless-Earbuds-Pro_234567.html',
     qcInstructionEn: 'Test pairing, both earbuds function, charging case works, ANC active.',
+    inStock: true,
   },
   {
     id: 'p-ali-3', merchant: 'aliexpress', title: 'Phone Ring Holder Stand', titleNl: 'Telefoon ringhouder (360°)',
@@ -110,6 +124,7 @@ export const SEED_PRODUCTS: Product[] = [
     imageUrl: 'https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg?auto=compress&cs=tinysrgb&w=600',
     sizes: ['Standaard'], colors: ['Goud', 'Zilver', 'Zwart'], originalUrl: 'https://www.aliexpress.com/item/Phone-Ring-Holder_345678.html',
     qcInstructionEn: 'Check adhesive strength, 360 rotation smooth, metal finish quality.',
+    inStock: true,
   },
   {
     id: 'p-ali-4', merchant: 'aliexpress', title: 'Stainless Steel Water Bottle', titleNl: 'RVS waterfles 500ml (thermos)',
@@ -117,6 +132,7 @@ export const SEED_PRODUCTS: Product[] = [
     imageUrl: 'https://images.pexels.com/photos/1188649/pexels-photo-1188649.jpeg?auto=compress&cs=tinysrgb&w=600',
     sizes: ['350ml', '500ml', '750ml'], colors: ['Zwart', 'Blauw', 'Groen', 'Rood'], originalUrl: 'https://www.aliexpress.com/item/Stainless-Bottle_456789.html',
     qcInstructionEn: 'Test leak-proof seal, thermal insulation (cold 24h), no dents, lid function.',
+    inStock: true,
   },
 ];
 

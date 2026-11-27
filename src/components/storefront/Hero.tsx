@@ -1,4 +1,4 @@
-import { ExternalLink, ShieldCheck, Leaf, Languages, Camera, X, ChevronDown, HelpCircle, Plus, Trash2, ShoppingBag, Bookmark, Check, Plane, Train, Volume2, VolumeX, ArrowLeft, Package, Search, Loader2, Truck, Eye } from 'lucide-react';
+import { ExternalLink, ShieldCheck, Leaf, Languages, Camera, X, ChevronDown, HelpCircle, Plus, Trash2, ShoppingBag, Bookmark, Check, Plane, Train, Volume2, VolumeX, ArrowLeft, Package, Search, Loader2, Truck, Eye, Clock } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useStore } from '@/lib/store';
 import { formatEur } from '@/lib/pricing';
@@ -10,16 +10,15 @@ interface Props {
   onSearch: (query: string, merchant: Merchant | 'all') => void;
 }
 
-const MERCHANT_SITES: Record<Merchant | 'nihao', { translatedUrl: string; siteLabel: string }> = {
+const MERCHANT_SITES: Record<Merchant, { translatedUrl: string; siteLabel: string }> = {
   '1688': { translatedUrl: 'https://www.1688.com', siteLabel: '1688.com' },
   'shein': { translatedUrl: 'https://www.shein.com', siteLabel: 'Shein.com' },
   'temu': { translatedUrl: 'https://www.temu.com', siteLabel: 'Temu.com' },
   'aliexpress': { translatedUrl: 'https://www.aliexpress.com', siteLabel: 'AliExpress.com' },
-  'nihao': { translatedUrl: 'https://www.nihaojewelry.com', siteLabel: 'Nihao Jewelry' },
 };
 
 const BULKY_KEYWORDS = ['koffer', 'trolley', 'suitcase', 'box', 'opberg', 'kussen', 'pillow', 'tas', 'rugzak', 'mand'];
-const WEIGHT_PRESETS = ['0.2', '0.5', '1.0', '1.5'];
+const STANDARD_WEIGHT_KG = 0.35;
 
 function isBulkyText(text: string): boolean {
   const lower = text.toLowerCase();
@@ -64,10 +63,7 @@ export default function Hero({ onSearch }: Props) {
   const [showBundleShowdown, setShowBundleShowdown] = useState(false);
   const [bookmarkCopied, setBookmarkCopied] = useState(false);
 
-  const [calcWeight, setCalcWeight] = useState('0.50');
-  const [calcLength, setCalcLength] = useState('');
-  const [calcWidth, setCalcWidth] = useState('');
-  const [calcHeight, setCalcHeight] = useState('');
+
 
   // Live 1688 search state
   const [liveSearchQuery, setLiveSearchQuery] = useState('');
@@ -104,14 +100,7 @@ export default function Hero({ onSearch }: Props) {
   const calcPriceNum = parseFloat(calcPrice) || 0;
   const factoryPriceEur = calcCurrency === 'RMB' ? calcPriceNum * settings.rmbToEurRate : calcPriceNum;
 
-  const actualWeightKg = Math.max(0.05, parseFloat(calcWeight) || detected.weightKg);
-  const lenCm = parseFloat(calcLength) || 0;
-  const widCm = parseFloat(calcWidth) || 0;
-  const heiCm = parseFloat(calcHeight) || 0;
-  const hasDims = lenCm > 0 && widCm > 0 && heiCm > 0;
-  const volumetricWeight = hasDims ? (lenCm * widCm * heiCm) / 8000 : 0;
-  const chargeableWeight = Math.max(actualWeightKg, volumetricWeight);
-  const hasVolCorrection = hasDims && volumetricWeight > actualWeightKg;
+  const chargeableWeight = Math.max(0.05, detected.weightKg || STANDARD_WEIGHT_KG);
 
   const bulkyDetected = isBulkyText(`${calcUrl} ${calcPhotoName} ${detected.label}`);
 
@@ -139,10 +128,6 @@ export default function Hero({ onSearch }: Props) {
         setCalcPrice(String(product.priceRmb));
         setCalcCurrency('RMB');
       }
-      if (product.weightKg > 0) setCalcWeight(String(product.weightKg));
-      if (product.lengthCm > 0) setCalcLength(String(product.lengthCm));
-      if (product.widthCm > 0) setCalcWidth(String(product.widthCm));
-      if (product.heightCm > 0) setCalcHeight(String(product.heightCm));
     })();
     return () => { cancelled = true; };
   }, [calcUrl]);
@@ -175,7 +160,14 @@ export default function Hero({ onSearch }: Props) {
   };
 
   const handleAddLiveToBundle = (product: Product) => {
-    addToCart(product, product.sizes[0] || 'Standaard', product.colors[0] || 'Standaard', 1);
+    addProcurementRequest({
+      id: `req-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      customerName: customerUser?.name,
+      customerEmail: customerUser?.email,
+      items: [{ id: `bbi-${Date.now()}`, url: product.originalUrl, priceEur: 0, currency: 'RMB', photoDataUrl: '', detectedWeightKg: product.weightKg, detectedCategory: product.category, chinedAllInEur: 0, source: 'lookup-request' }],
+      status: 'Nieuw',
+    });
   };
 
   const handleAddToBundle = () => {
@@ -194,7 +186,6 @@ export default function Hero({ onSearch }: Props) {
     };
     setBundleItems([...bundleItems, item]);
     setCalcUrl(''); setCalcPrice(''); setCalcPhoto(''); setCalcPhotoName(''); setCalcTemuPrice(''); setShowBreakdown(false);
-    setCalcWeight('0.50'); setCalcLength(''); setCalcWidth(''); setCalcHeight('');
     setShowBundleShowdown(true);
   };
 
@@ -268,11 +259,11 @@ export default function Hero({ onSearch }: Props) {
               <ol className="space-y-3">
                 <li className="flex gap-2.5">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-600 text-white text-xs font-bold flex items-center justify-center">1</span>
-                  <p className="text-xs text-slate-700 leading-relaxed"><b className="text-slate-900">Heb je een leuk product gezien op Temu, Shein of AliExpress?</b> Maak er een foto of screenshot van, klik op onze <a href="https://www.1688.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-orange-600 text-white text-[11px] font-bold hover:bg-orange-700 transition-colors">1688-knop <ExternalLink className="w-2.5 h-2.5" /></a>, druk daar op het camera-icoontje en upload je foto om de directe fabrieksprijs te zien.</p>
+                  <p className="text-xs text-slate-700 leading-relaxed"><b className="text-slate-900">Heb je een leuk product gezien op Temu, Shein of AliExpress?</b> Maak er een foto of screenshot van, plak de link in de ChiNed zoekbalk hieronder, en wij zoeken direct de fabrieksprijs op 1688.com.</p>
                 </li>
                 <li className="flex gap-2.5">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center">2</span>
-                  <p className="text-xs text-slate-700 leading-relaxed"><b className="text-slate-900">Vul hieronder die 1688-prijs, het gewicht en eventuele afmetingen in</b> <span className="text-slate-500">(check gewicht & afmetingen bij 'Productgegevens' op Temu of 1688 voor een nauwkeurige prijs)</span> en zet jouw Temu/Shein-prijs ernaast.</p>
+                  <p className="text-xs text-slate-700 leading-relaxed"><b className="text-slate-900">Vul hieronder de 1688-prijs in</b> en zet jouw Temu/Shein-prijs ernaast. Gewicht is standaard 0,35 kg — aangepast op productcategorie.</p>
                 </li>
                 <li className="flex gap-2.5">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center">3</span>
@@ -321,53 +312,18 @@ export default function Hero({ onSearch }: Props) {
             </div>
           </div>
 
-          {/* Split external links: Etalage vs Fabrieksbron */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div className="bg-white rounded-xl border border-slate-200 p-3">
-              <p className="text-xs font-bold text-slate-900 mb-2">1. Kies een Etalage <span className="font-normal text-slate-400">(Inspiratie & Prijsvergelijking)</span></p>
-              <div className="flex flex-wrap gap-2">
-                {(['temu', 'shein', 'aliexpress'] as Merchant[]).map(m => {
-                  const site = MERCHANT_SITES[m];
-                  return (
-                    <a key={m} href={site.translatedUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-600 transition-all">
-                      <ExternalLink className="w-3.5 h-3.5" /> {site.siteLabel}
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl border border-orange-200 p-3">
-              <p className="text-xs font-bold text-slate-900 mb-2">2. Open de Fabrieksbron <span className="font-normal text-slate-400">(Groothandelsprijs)</span></p>
-              <div className="flex flex-wrap items-center gap-2">
-                <a href={MERCHANT_SITES['1688'].translatedUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold bg-orange-600 hover:bg-orange-700 text-white shadow-sm transition-all">
-                  <Languages className="w-3.5 h-3.5" /> 1688.com <ExternalLink className="w-3 h-3" />
-                </a>
-                <a href={MERCHANT_SITES['nihao'].translatedUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-white border border-slate-200 hover:border-orange-300 hover:bg-orange-50 text-slate-600 transition-all">
-                  <ExternalLink className="w-3.5 h-3.5" /> Nihao Jewelry
-                </a>
-                <div className="relative flex items-center gap-1">
-                  <button onClick={() => setHelpOpen(!helpOpen)} className="p-1 rounded-full text-slate-400 hover:text-orange-600 hover:bg-orange-50" title="Hulp: Hoe zoek ik met een foto op 1688?"><HelpCircle className="w-4 h-4" /></button>
-                  {helpOpen && (
-                    <div className="absolute top-full right-0 mt-2 w-72 bg-white border border-slate-200 rounded-xl shadow-lg p-3 z-20 text-left">
-                      <p className="text-xs font-bold text-slate-900 mb-2">Hulp: Hoe zoek ik met een foto op 1688?</p>
-                      <ol className="text-[11px] text-slate-600 space-y-1.5 list-decimal pl-4">
-                        <li>Zet rechtsboven de taal/valuta op Nederlands / EUR (€).</li>
-                        <li>Klik op het camera-icoon in de zoekbalk en upload je productfoto.</li>
-                        <li>Kopieer het webadres (URL) en de €-prijs terug naar ChiNed.</li>
-                      </ol>
-                      <div className="mt-3 pt-2 border-t border-slate-100">
-                        <p className="text-[10px] font-bold text-orange-600 mb-1.5">Sneller: 1-klik ChiNed Bookmarklet</p>
-                        <p className="text-[10px] text-slate-500 mb-2">Sleep deze knop naar je bladwijzerbalk. Klik erop op elke 1688-productpagina om de link + prijs direct naar ChiNed te sturen.</p>
-                        <div className="flex gap-1.5">
-                          <a href={bookmarkletCode} onClick={e => e.preventDefault()} draggable className="flex items-center gap-1 px-2.5 py-1.5 bg-orange-600 text-white rounded-lg text-[10px] font-semibold cursor-grab"><Bookmark className="w-3 h-3" /> ChiNed-prijs →</a>
-                          <button onClick={handleCopyBookmark} className="flex items-center gap-1 px-2 py-1.5 bg-slate-100 text-slate-700 rounded-lg text-[10px] font-semibold hover:bg-slate-200">{bookmarkCopied ? <><Check className="w-3 h-3 text-emerald-600" /> Gekopieerd</> : 'Kopieer code'}</button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
+          {/* Etalage links (inspiratie) */}
+          <div className="bg-white rounded-xl border border-slate-200 p-3 mb-6">
+            <p className="text-xs font-bold text-slate-900 mb-2">1. Kies een Etalage <span className="font-normal text-slate-400">(Inspiratie & Prijsvergelijking)</span></p>
+            <div className="flex flex-wrap gap-2">
+              {(['temu', 'shein', 'aliexpress'] as Merchant[]).map(m => {
+                const site = MERCHANT_SITES[m];
+                return (
+                  <a key={m} href={site.translatedUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-600 transition-all">
+                    <ExternalLink className="w-3.5 h-3.5" /> {site.siteLabel}
+                  </a>
+                );
+              })}
             </div>
           </div>
 
@@ -425,9 +381,9 @@ export default function Hero({ onSearch }: Props) {
                           </div>
                           <button
                             onClick={() => handleAddLiveToBundle(product)}
-                            className="mt-1.5 w-full py-1.5 rounded-lg bg-orange-600 hover:bg-orange-700 text-white text-[10px] font-semibold flex items-center justify-center gap-1"
+                            className="mt-1.5 w-full py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-semibold flex items-center justify-center gap-1"
                           >
-                            <Plus className="w-3 h-3" /> Voeg toe aan mijn ChiNed Bundel
+                            <Clock className="w-3 h-3" /> Vraag aan voor Rotterdam-drop (vrijblijvend)
                           </button>
                         </div>
                       </div>
@@ -464,40 +420,6 @@ export default function Hero({ onSearch }: Props) {
                   <Camera className="w-4 h-4" /> {calcPhotoName || 'Upload foto'}
                   <input type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) { const r = new FileReader(); r.onload = () => { setCalcPhoto(String(r.result)); }; r.readAsDataURL(f); setCalcPhotoName(f.name); } }} />
                 </label>
-              </div>
-
-              {/* Weight + dimensions row */}
-              <div className="sm:col-span-2">
-                <label className="text-xs font-semibold text-slate-600 block mb-1">Gewicht (kg)</label>
-                <div className="flex flex-wrap items-center gap-2">
-                  <div className="relative w-28">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">kg</span>
-                    <input type="number" step={0.05} value={calcWeight} onChange={e => setCalcWeight(e.target.value)} className="w-full pl-8 pr-2 py-2.5 rounded-lg border border-slate-200 text-sm focus:border-orange-400 outline-none" />
-                  </div>
-                  <div className="flex gap-1.5">
-                    {WEIGHT_PRESETS.map(p => (
-                      <button key={p} onClick={() => setCalcWeight(p)} className={`px-2.5 py-1.5 rounded-full text-xs font-semibold transition-all ${calcWeight === p ? 'bg-orange-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>{p} kg</button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className={`sm:col-span-2 rounded-lg p-2.5 transition-all ${bulkyDetected ? 'border-2 border-orange-300 bg-orange-50' : 'border border-slate-200'}`}>
-                <label className="text-xs font-semibold text-slate-600 block mb-1.5">Optionele Afmetingen (L × B × H cm) — voor grote of holle producten</label>
-                <div className="grid grid-cols-3 gap-2">
-                  <div><input type="number" value={calcLength} onChange={e => setCalcLength(e.target.value)} placeholder="Lengte" className="w-full px-2 py-2 rounded-lg border border-slate-200 text-sm focus:border-orange-400 outline-none" /></div>
-                  <div><input type="number" value={calcWidth} onChange={e => setCalcWidth(e.target.value)} placeholder="Breedte" className="w-full px-2 py-2 rounded-lg border border-slate-200 text-sm focus:border-orange-400 outline-none" /></div>
-                  <div><input type="number" value={calcHeight} onChange={e => setCalcHeight(e.target.value)} placeholder="Hoogte" className="w-full px-2 py-2 rounded-lg border border-slate-200 text-sm focus:border-orange-400 outline-none" /></div>
-                </div>
-                {bulkyDetected && (
-                  <div className="mt-2 flex items-start gap-2 bg-orange-100 border border-orange-300 rounded-lg p-2.5">
-                    <Package className="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" />
-                    <p className="text-xs text-orange-800 leading-relaxed">Let op: Bij grote of holle producten (zoals koffers, opbergboxen of kussens) telt het volumegewicht mee. Vul de afmetingen (L × B × H cm) uit de productbeschrijving in voor een nauwkeurige eindprijs.</p>
-                  </div>
-                )}
-                {hasVolCorrection && (
-                  <p className="text-[11px] text-orange-700 font-semibold mt-2">Inclusief volumegewicht-correctie ({volumetricWeight.toFixed(2)} kg)</p>
-                )}
               </div>
 
               <div className="sm:col-span-2">
@@ -599,12 +521,7 @@ export default function Hero({ onSearch }: Props) {
             </div>
           )}
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
-            <FeatureBadge icon={<ShieldCheck className="w-5 h-5" />} title="Veilig B2B" desc="Geen EU-toeslagen" color="text-emerald-600 bg-emerald-50" />
-            <FeatureBadge icon={<Camera className="w-5 h-5" />} title="Foto of link" desc="Van je etalage" color="text-blue-600 bg-blue-50" />
-            <FeatureBadge icon={<ExternalLink className="w-5 h-5" />} title="Chinese bronnen" desc="1688 & Nihao" color="text-orange-600 bg-orange-50" />
-            <FeatureBadge icon={<Leaf className="w-5 h-5" />} title="Duurzaam" desc="Via Rotterdam" color="text-green-600 bg-green-50" />
-          </div>
+
         </div>
       </div>
 

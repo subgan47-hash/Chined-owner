@@ -29,7 +29,7 @@ const STATUS_FLOW: OrderStatus[] = [
 type TransportFilter = 'all' | 'train' | 'air';
 
 export default function Tab4Procurement() {
-  const { orders, settings, updateOrderStatus, products, addProduct, updateProduct, deleteProduct, deleteAllProducts, updateSettings, procurementRequests, updateProcurementRequest, addQcPhotos } = useStore();
+  const { orders, settings, updateOrderStatus, products, addProduct, updateProduct, deleteProduct, deleteAllProducts, updateSettings, procurementRequests, updateProcurementRequest, moveProcurementToStock, addQcPhotos } = useStore();
   const [transportFilter, setTransportFilter] = useState<TransportFilter>('all');
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showCatalog, setShowCatalog] = useState(false);
@@ -113,7 +113,7 @@ export default function Tab4Procurement() {
       </div>
 
       {showProcurement ? (
-        <ProcurementRequestsPanel requests={procurementRequests} onUpdate={updateProcurementRequest} settings={settings} />
+        <ProcurementRequestsPanel requests={procurementRequests} onUpdate={updateProcurementRequest} onMoveToStock={moveProcurementToStock} settings={settings} />
       ) : !showCatalog ? (
         <>
           <div className="bg-white rounded-xl border border-slate-200 p-4 mb-4">
@@ -255,15 +255,22 @@ export default function Tab4Procurement() {
   );
 }
 
-function ProcurementRequestsPanel({ requests, onUpdate, settings }: { requests: ProcurementRequest[]; onUpdate: (req: ProcurementRequest) => void; settings: import('@/lib/types').Settings }) {
+function ProcurementRequestsPanel({ requests, onUpdate, onMoveToStock, settings }: { requests: ProcurementRequest[]; onUpdate: (req: ProcurementRequest) => void; onMoveToStock: (reqId: string, product: Product) => void; settings: import('@/lib/types').Settings }) {
   const [priceInputs, setPriceInputs] = useState<Record<string, string>>({});
   const [weightInputs, setWeightInputs] = useState<Record<string, string>>({});
 
+  const STATUS_BADGE: Record<string, string> = {
+    'Nieuw': 'bg-blue-100 text-blue-700',
+    'In Review': 'bg-amber-100 text-amber-700',
+    'Op Inkooplijst': 'bg-orange-100 text-orange-700',
+    'Op Voorraad in Rotterdam': 'bg-emerald-100 text-emerald-700',
+  };
+
   return (
     <div>
-      <h2 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2"><Inbox className="w-4 h-4 text-blue-600" /> Klant Opzoekverzoeken (1688prijs &amp; gewicht invullen)</h2>
+      <h2 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2"><Inbox className="w-4 h-4 text-blue-600" /> Klant Aanvragen — Rotterdam-drop flow</h2>
       {requests.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-8 text-center"><p className="text-sm text-slate-400">Nog geen opzoekverzoeken. Klanten die alleen Temu-screenshots uploaden komen hier terecht.</p></div>
+        <div className="bg-white rounded-xl border border-slate-200 p-8 text-center"><p className="text-sm text-slate-400">Nog geen aanvragen. Klanten die een vrijblijvende aanvraag doen komen hier terecht.</p></div>
       ) : (
         <div className="space-y-4">
           {requests.map(req => {
@@ -274,8 +281,8 @@ function ProcurementRequestsPanel({ requests, onUpdate, settings }: { requests: 
             return (
               <div key={req.id} className="bg-white rounded-xl border border-slate-200 p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <div><p className="text-sm font-bold text-slate-900">Verzoek {req.id.slice(-6)}</p><p className="text-[10px] text-slate-400">{new Date(req.createdAt).toLocaleString('nl-NL')} · {req.customerName || 'Gast'} · {req.items.length} items</p></div>
-                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${req.status === 'Nieuw' ? 'bg-blue-100 text-blue-700' : req.status === 'Offerte Verzonden' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>{req.status}</span>
+                  <div><p className="text-sm font-bold text-slate-900">Aanvraag {req.id.slice(-6)}</p><p className="text-[10px] text-slate-400">{new Date(req.createdAt).toLocaleString('nl-NL')} · {req.customerName || 'Gast'} · {req.items.length} items</p></div>
+                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${STATUS_BADGE[req.status] || 'bg-slate-100 text-slate-600'}`}>{req.status}</span>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-3">
                   {req.items.map((item, i) => (
@@ -286,13 +293,49 @@ function ProcurementRequestsPanel({ requests, onUpdate, settings }: { requests: 
                     </div>
                   ))}
                 </div>
-                <div className="grid sm:grid-cols-3 gap-3 items-end bg-blue-50 rounded-lg p-3">
+                <div className="grid sm:grid-cols-3 gap-3 items-end bg-blue-50 rounded-lg p-3 mb-3">
                   <div><label className="text-[10px] font-semibold text-slate-600 block mb-1">1688 fabrieksprijs (€)</label><input type="number" value={priceInputs[req.id] || ''} onChange={e => setPriceInputs({ ...priceInputs, [req.id]: e.target.value })} placeholder="bijv. 12,50" className="w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm" /></div>
                   <div><label className="text-[10px] font-semibold text-slate-600 block mb-1">Gewicht (kg) — auto: {detected.weightKg}</label><input type="number" step={0.1} value={weightInputs[req.id] || ''} onChange={e => setWeightInputs({ ...weightInputs, [req.id]: e.target.value })} placeholder={String(detected.weightKg)} className="w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm" /></div>
                   <div>
                     {adminPrice > 0 && <p className="text-xs text-slate-600 mb-1">All-in: <b className="text-orange-600">{formatEur(breakdown.allIn)}</b> per item</p>}
-                    <button onClick={() => onUpdate({ ...req, admin1688PriceEur: adminPrice, adminWeightKg: adminWeight, status: 'Offerte Verzonden' })} disabled={adminPrice <= 0} className={`w-full flex items-center justify-center gap-1 py-2 rounded-lg text-xs font-semibold ${adminPrice > 0 ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-slate-100 text-slate-400'}`}><Send className="w-3.5 h-3.5" /> Verzend checkout-link naar klant</button>
                   </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {req.status === 'Nieuw' && (
+                    <button onClick={() => onUpdate({ ...req, status: 'In Review' })} className="flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold bg-amber-600 hover:bg-amber-700 text-white"><Filter className="w-3.5 h-3.5" /> Markeer als In Review</button>
+                  )}
+                  {req.status === 'In Review' && (
+                    <button onClick={() => onUpdate({ ...req, status: 'Op Inkooplijst' })} className="flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold bg-orange-600 hover:bg-orange-700 text-white"><ShieldCheck className="w-3.5 h-3.5" /> Zet op Inkooplijst</button>
+                  )}
+                  {req.status === 'Op Inkooplijst' && adminPrice > 0 && (
+                    <button
+                      onClick={() => {
+                        const firstItem = req.items[0];
+                        if (firstItem) {
+                          const product: Product = {
+                            id: `p-${Date.now()}`,
+                            merchant: '1688',
+                            title: firstItem.url,
+                            titleNl: `Aanvraag ${req.id.slice(-6)}`,
+                            category: (firstItem.detectedCategory as Category) || 'Wonen',
+                            priceRmb: adminPrice / settings.rmbToEurRate,
+                            weightKg: adminWeight,
+                            lengthCm: 0, widthCm: 0, heightCm: 0,
+                            imageUrl: firstItem.photoDataUrl || 'https://images.pexels.com/photos/4226791/pexels-photo-4226791.jpeg?auto=compress&cs=tinysrgb&w=600',
+                            sizes: ['Standaard'], colors: ['Standaard'],
+                            originalUrl: firstItem.url,
+                            qcInstructionEn: 'QC: verify product matches customer request photo.',
+                            inStock: true,
+                          };
+                          onMoveToStock(req.id, product);
+                        }
+                      }}
+                      className="flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white"
+                    ><Check className="w-3.5 h-3.5" /> Op Voorraad in Rotterdam</button>
+                  )}
+                  {req.status === 'Op Voorraad in Rotterdam' && (
+                    <span className="text-xs font-semibold text-emerald-700 flex items-center gap-1 px-3 py-2"><Check className="w-3.5 h-3.5" /> Product staat in catalogus</span>
+                  )}
                 </div>
               </div>
             );
@@ -345,7 +388,7 @@ function ProductCatalogManager({ products, onAdd, onUpdate, onDelete, onDeleteAl
 
   const startAdd = () => {
     setEditingProduct(null);
-    setForm({ merchant: '1688', category: 'Wonen', sizes: ['Standaard'], colors: ['Standaard'], priceRmb: 0, weightKg: 0, lengthCm: 0, widthCm: 0, heightCm: 0, titleNl: '', title: '', imageUrl: '', originalUrl: '', qcInstructionEn: '' });
+    setForm({ merchant: '1688', category: 'Wonen', sizes: ['Standaard'], colors: ['Standaard'], priceRmb: 0, weightKg: 0, lengthCm: 0, widthCm: 0, heightCm: 0, titleNl: '', title: '', imageUrl: '', originalUrl: '', qcInstructionEn: '', inStock: true });
     setShowForm(true);
   };
 
@@ -366,6 +409,7 @@ function ProductCatalogManager({ products, onAdd, onUpdate, onDelete, onDeleteAl
       colors: form.colors || ['Standaard'],
       originalUrl: form.originalUrl || '',
       qcInstructionEn: form.qcInstructionEn || 'Check product quality and quantity.',
+      inStock: form.inStock ?? true,
     };
     if (editingProduct) onUpdate(product);
     else onAdd(product);
@@ -511,6 +555,7 @@ function ProductCatalogManager({ products, onAdd, onUpdate, onDelete, onDeleteAl
             <FormField label="Maten (kommagescheiden)"><input type="text" value={(form.sizes || []).join(',')} onChange={e => setForm({ ...form, sizes: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })} className="form-input" /></FormField>
             <FormField label="Kleuren (kommagescheiden)"><input type="text" value={(form.colors || []).join(',')} onChange={e => setForm({ ...form, colors: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })} className="form-input" /></FormField>
             <FormField label="QC instructie (EN)" full><input type="text" value={form.qcInstructionEn || ''} onChange={e => setForm({ ...form, qcInstructionEn: e.target.value })} className="form-input" /></FormField>
+            <FormField label="Op voorraad in Rotterdam"><label className="flex items-center gap-2"><input type="checkbox" checked={form.inStock ?? true} onChange={e => setForm({ ...form, inStock: e.target.checked })} className="w-4 h-4 rounded border-slate-300 text-orange-600 focus:ring-orange-400" /> <span className="text-xs text-slate-600">Ja, product is fysiek op voorraad</span></label></FormField>
           </div>
           <div className="flex gap-2 mt-3">
             <button onClick={() => setShowForm(false)} className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg text-sm">Annuleren</button>
@@ -527,6 +572,11 @@ function ProductCatalogManager({ products, onAdd, onUpdate, onDelete, onDeleteAl
               <div className="flex items-center gap-1.5 mb-0.5">
                 <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${MERCHANT_BADGE[p.merchant].class}`}>{MERCHANT_BADGE[p.merchant].label}</span>
                 <span className="text-[9px] text-slate-400">{p.category}</span>
+                {p.inStock ? (
+                  <span className="text-[9px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full">Op voorraad</span>
+                ) : (
+                  <span className="text-[9px] font-semibold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded-full">Aanvraag</span>
+                )}
               </div>
               <p className="text-xs font-medium text-slate-900 truncate">{p.titleNl}</p>
               <p className="text-xs text-slate-500">{formatRmb(p.priceRmb)} · {p.weightKg}kg</p>

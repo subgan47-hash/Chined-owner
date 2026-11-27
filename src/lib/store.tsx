@@ -51,6 +51,7 @@ interface StoreContextValue extends StoreState {
   updatePriceProofs: (proofs: PriceProof[]) => void;
   addProcurementRequest: (req: ProcurementRequest) => void;
   updateProcurementRequest: (req: ProcurementRequest) => void;
+  moveProcurementToStock: (reqId: string, product: Product) => void;
 }
 
 const StoreContext = createContext<StoreContextValue | null>(null);
@@ -147,6 +148,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const addToCart = useCallback((product: Product, size: string, color: string, quantity: number = 1) => {
+    if (!product.inStock) return;
     setState(s => {
       const existing = s.cart.find(ci => ci.product.id === product.id && ci.size === size && ci.color === color);
       if (existing) {
@@ -258,6 +260,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const updatePriceProofs = useCallback((proofs: PriceProof[]) => setState(prev => ({ ...prev, priceProofs: proofs })), []);
   const addProcurementRequest = useCallback((req: ProcurementRequest) => setState(prev => ({ ...prev, procurementRequests: [req, ...prev.procurementRequests] })), []);
   const updateProcurementRequest = useCallback((req: ProcurementRequest) => setState(prev => ({ ...prev, procurementRequests: prev.procurementRequests.map(r => r.id === req.id ? req : r) })), []);
+  const moveProcurementToStock = useCallback((reqId: string, product: Product) => {
+    const stockedProduct = { ...product, inStock: true };
+    setState(s => ({
+      ...s,
+      products: [...s.products, stockedProduct],
+      procurementRequests: s.procurementRequests.map(r => r.id === reqId ? { ...r, status: 'Op Voorraad in Rotterdam' } : r),
+    }));
+    upsertProduct(stockedProduct as unknown as Record<string, unknown>);
+  }, []);
 
   const updateOrderStatus = useCallback((orderId: string, status: Order['status']) => {
     setState(s => ({
@@ -324,7 +335,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       checkout, loginAdmin, logoutAdmin, updateSettings, updateApiKeys, updateLegal,
       updateOrderStatus, addProduct, updateProduct, deleteProduct, deleteAllProducts, logReturnDepreciation, addQcPhotos,
       registerCustomer, loginCustomer, logoutCustomer, updatePriceProofs,
-      addProcurementRequest, updateProcurementRequest,
+      addProcurementRequest, updateProcurementRequest, moveProcurementToStock,
     }}>
       {children}
     </StoreContext.Provider>

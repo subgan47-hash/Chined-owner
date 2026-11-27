@@ -70,8 +70,8 @@ export const DEFAULT_API_KEYS: ApiKeyConfig = {
 };
 
 export const DEFAULT_LEGAL: LegalDocs = {
-  heroBanner: 'Vind producten op Shein, AliExpress en Temu. Wij zoeken ze goedkoper in China.',
-  trustBar: '100% Transparante Fabrieksprijs · Geconsolideerde B2B-import via Rotterdam · QC met foto in China · Veilig betalen (iDEAL / Klarna / Bancontact) · 14 dagen zichttermijn',
+  heroBanner: 'Vind producten op Shein, AliExpress en Temu. Wij zoeken ze goedkoper in China en verkopen vanuit voorraad in Rotterdam.',
+  trustBar: '100% Duurzame Treinvracht · Voorraad in Rotterdam (1-2 dagen) & Wekelijkse Rotterdam-drops (18-24 dagen)',
   terms: `## Algemene Voorwaarden van ChiNed
 
 **Artikel 1 – Definities**
@@ -79,17 +79,17 @@ ChiNed: de handelsnaam van de cross-border e-commerce aggregator gevestigd te Ro
 Klant: de natuurlijke persoon die via de ChiNed-platform een bestelling plaatst.
 Bundel: een gecombineerde zending van minimaal 6 items afkomstig van verschillende Chinese webshops.
 
-**Artikel 2 – Minimumbundel van 6 items**
-Om meerdere producten efficiënt samen te sourcen en als één bundel te importeren, stelt ChiNed een minimum van 6 items per bestelling.
+**Artikel 2 – Eerst inkopen, dan verkopen**
+ChiNed koopt producten eerst zelf in bij Chinese sourcing-sites en voert deze in via Rotterdam. Pas wanneer de producten fysiek in Rotterdam op voorraad liggen, worden ze in de webshop aangeboden voor directe verkoop. Klanten kunnen voor producten die nog niet op voorraad zijn een vrijblijvende aanvraag doen voor een volgende Rotterdam-drop. Er wordt geen betaling gevraagd voor producten die nog niet fysiek in voorraad zijn.
 
 **Artikel 3 – Prijzen en wisselkoersen**
-Alle prijzen op ChiNed worden berekend op basis van de actuele RMB-naar-EUR wisselkoers vermeerderd met een valuta-buffer van 3%. De getoonde sourcingprijs maakt duidelijk welke kosten in de bundel zijn verwerkt.
+Alle prijzen op ChiNed worden berekend op basis van de actuele RMB-naar-EUR wisselkoers vermeerderd met een valuta-buffer van 3%. De getoonde all-in prijs is de prijs die de klant betaalt, inclusief btw, invoerrechten, vracht en bezorging. Voor producten die nog niet op voorraad zijn, wordt een vrijblijvende richtprijs getoond.
 
 **Artikel 4 – Transportmodi**
 ChiNed verzamelt bestellingen bij Chinese sourcing-sites, controleert de producten en verwerkt ze via de Rotterdamse hub.
 
-**Artikel 5 – Community Retourfonds**
-Elke bestelling bevat een bijdrage aan het ChiNed Collectief Community Retourfonds (€ 0,50 per standaarditem, € 0,85 per kledingstuk). Klanten die gedurende 12 maanden geen retour indienen, ontvangen hun volledige inleg terug met 10% bonus als shoptegoed, of 100% als contante uitbetaling.
+**Artikel 5 – ChiNed Retour-Spaarpot**
+ChiNed hanteert één all-in prijs per product. Daarbij is een gratis loyaliteitsbonus inbegrepen: de ChiNed Retour-Spaarpot. Bij een retour binnen 14 dagen ontvangt de klant wettelijk 100% van het aankoopbedrag terug. Klanten die gedurende 12 maanden geen retour indienen, ontvangen de opgebouwde spaarpot + 10% bonus als shoptegoed, of 100% als contante uitbetaling. De spaarpot is geen aparte toeslag en wordt niet extra in rekening gebracht.
 
 **Artikel 6 – Risico- en nalevingscontrole**
 ChiNed blokkeert automatisch producten die voldoen aan risicokenmerken (namaak, replica, merkartikelen, batterijen, accu's, vloeistoffen, messen, wapens, medicijnen, voeding en cosmetica). Maximale pakketafmetingen: 100 x 50 x 50 cm, maximaal gewicht 20 kg.
@@ -109,21 +109,19 @@ Laatst bijgewerkt: 2026`,
 **Teruggavekosten**
 Bij retour van 1 item bedragen de retourverzendkosten € 3,95. Bij retour van meerdere items € 6,95. Deze kosten worden verhaald op de klant.
 
-**Community Retourfonds – Schadevrij-Voorrangsregel**
-Naast de retourverzendkosten worden interne afschrijvingen, inspectie- en herverpakkingskosten in Rotterdam verhaald op het collectieve community-fonds, niet op de individuele klant.
+**Retour-Spaarpot – Schadevrij-Voorrangsregel**
+De ChiNed Retour-Spaarpot is een gratis loyaliteitsbonus, inbegrepen in de all-in prijs. Bij een retour binnen 14 dagen ontvangt de klant wettelijk 100% van het aankoopbedrag terug. Er zijn geen extra retourkosten of afschrijvingen voor de klant.
 
 Klanten met 0 retouren in een 12-maands periode:
 • Krijgen voorrang bij uitkering
-• Ontvangen tot 100% van hun persoonlijke inleg terug
+• Ontvangen de opgebouwde spaarpot + 10% bonus als ChiNed shoptegoed
 • Keuze: ChiNed Shoptegoed + 10% bonus, of contante uitbetaling naar bankrekening
 
-Het resterende fonds wordt pro-rata verdeeld onder klanten die wel retouren hebben ingediend.
-
 **Retourprocedure**
-1. Meld je retour aan via je ChiNed-account
+1. Meld je retour aan via je ChiNed-account binnen 14 dagen na levering
 2. Print het PostNL-retourlabel
 3. Lever het pakket in bij een PostNL-punt
-4. Na inspectie in Rotterdam wordt je inlegpositie bijgewerkt
+4. Je ontvangt 100% van het aankoopbedrag terug
 
 Laatst bijgewerkt: 2026`,
   privacy: `## Privacybeleid (AVG) ChiNed
@@ -156,36 +154,39 @@ Werk dagelijks van Nieuw naar QC Goedgekeurd, naar Rotterdam en daarna naar bezo
 Gebruik Print / Exporteer Handboek voor een overdraagbare werkinstructie.`,
   handbookCustomer: `# Klantenhandleiding
 
-1. Bekijk een product op Temu, Shein, AliExpress of 1688.
-2. Plak een productlink of upload een foto in de zoekbalk.
-3. Vergelijk de etalageprijs met de ChiNed sourcingprijs.
-4. Voeg minimaal 6 items uit verschillende categorieën toe aan je bundel.
-5. Registreer of log in voor afrekenen, kies thuisbezorging of een wijkpunt en volg daarna je bestelling.
-6. Je bijdrage aan het Community Retourfonds blijft zichtbaar in Mijn Account.`,
+1. Bekijk een product op Temu, Shein of AliExpress.
+2. Plak een productlink of upload een foto in de ChiNed zoekbalk.
+3. Vergelijk de etalageprijs met de ChiNed all-in richtprijs.
+4. Is het product op voorraad in Rotterdam? Voeg het toe aan je mandje en reken direct af.
+5. Nog niet op voorraad? Doe een vrijblijvende aanvraag voor de volgende Rotterdam-drop.
+6. Volg je bestelling via je account met Track & Trace.
+7. Je ChiNed Retour-Spaarpot blijft zichtbaar in Mijn Account — bij 0 retouren in 12 maanden ontvang je de spaarpot + 10% bonus.`,
   guide: `# Hoe werkt ChiNed?
 
-**1. Kies een etalageproduct** — gebruik Temu, Shein, AliExpress of 1688 om ideeën te vinden.
+**1. Kies een etalageproduct** — gebruik Temu, Shein of AliExpress om ideeën te vinden.
 
-**2. Deel de link of foto** — ChiNed gebruikt je link of foto om een vergelijkbaar product bij Chinese sourcing-sites te vinden.
+**2. Zoek via ChiNed** — plak een link of upload een foto. ChiNed zoekt direct op 1688.com en toont de all-in richtprijs.
 
-**3. Vergelijk echt** — bekijk bronprijs, bundelkosten en de duidelijke ChiNed-prijs.
+**3. Vergelijk echt** — bekijk de etalageprijs en de ChiNed all-in prijs naast elkaar.
 
-**4. Bundel 6 items** — combineer producten zodat de B2B-route efficiënt kan worden verwerkt.
+**4. Op voorraad? Direct bestellen** — producten met het groene 'Op voorraad' badge kun je direct afrekenen.
 
-**5. Ontvang en volg** — registreer je, kies thuisbezorging of een wijkpunt en volg elke stap in je account.`,
+**5. Nog niet op voorraad? Vraag aan** — doe een vrijblijvende aanvraag voor de volgende Rotterdam-drop. Geen betaling nodig.
+
+**6. Ontvang en volg** — registreer je, kies thuisbezorging of een wijkpunt en volg elke stap in je account.`,
   faq: `## Veelgestelde Vragen
 
-**Waarom een minimum van 6 items?**
-Door minimaal 6 items te bundelen, kunnen we de bestelling als één efficiënte B2B-import verwerken en onnodige losse pakketkosten voorkomen.
+**Waarom zijn sommige producten niet direct op voorraad?**
+ChiNed koopt eerst in bij Chinese sourcing-sites en voert producten in via Rotterdam. Pas als ze fysiek in voorraad liggen, kun je direct afrekenen. Voor andere producten kun je een vrijblijvende aanvraag doen voor de volgende Rotterdam-drop.
 
-**Wat is het Community Retourfonds?**
-Elke bestelling bevat een kleine bijdrage (€ 0,50 per item, € 0,85 per kledingstuk) aan een collectief fonds. Klanten die een jaar lang niets retourneren krijgen hun inleg terug plus 10% bonus.
+**Wat is de ChiNed Retour-Spaarpot?**
+Dat is een gratis loyaliteitsbonus, inbegrepen in de all-in prijs. Bij een retour binnen 14 dagen ontvang je wettelijk 100% van je aankoopbedrag terug. Bij 0 retouren in 12 maanden ontvang je de opgebouwde spaarpot + 10% bonus als shoptegoed.
 
 **Hoe lang duurt de levering?**
-De actuele verwerking en bezorgopties worden tijdens het afrekenen duidelijk weergegeven.
+Voor producten op voorraad in Rotterdam: 1-2 werkdagen. Voor Rotterdam-drop aanvragen: 18-24 dagen (treinvracht).
 
 **Kan ik items uit verschillende webshops combineren?**
-Ja! Dat is juist het idee van ChiNed. Je combineert items van 1688, Shein, Temu en AliExpress in één mandje.
+Ja! ChiNed zoekt producten van 1688, Shein, Temu en AliExpress en bundelt ze in één bestelling.
 
 **Wat als mijn product niet leverbaar blijkt?**
 CN Cargo in China controleert elke bestelling met foto's (QC) voordat deze naar Rotterdam gaat. Als een product niet aan de kwaliteitsnorm voldoet, bestellen we het opnieuw of crediteren we het bedrag.

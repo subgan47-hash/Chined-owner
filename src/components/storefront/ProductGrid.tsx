@@ -2,7 +2,7 @@ import { useStore } from '@/lib/store';
 import type { Product, Merchant, Category } from '@/lib/types';
 import { formatEur, checkRiskKeywords, checkParcelDimensions } from '@/lib/pricing';
 import { calculateChinedPrice, type FreightMode } from '@/lib/bundleBuilder';
-import { ShoppingBag, AlertTriangle, ExternalLink, ShieldCheck, Flame } from 'lucide-react';
+import { ShoppingBag, AlertTriangle, ExternalLink, ShieldCheck, Flame, PackageCheck, Clock } from 'lucide-react';
 import { useState } from 'react';
 
 interface Props {
@@ -32,7 +32,7 @@ const CATEGORY_PILLS: { key: CategoryPill; label: string }[] = [
 ];
 
 export default function ProductGrid({ filter, onProductClick }: Props) {
-  const { products, settings, addToCart, cart, transportMode } = useStore();
+  const { products, settings, addToCart, cart, transportMode, addProcurementRequest, customerUser } = useStore();
   const [categoryPill, setCategoryPill] = useState<CategoryPill>('all');
 
   let filtered = products;
@@ -124,8 +124,10 @@ export default function ProductGrid({ filter, onProductClick }: Props) {
                   <span className="text-[10px] font-medium px-2 py-1 rounded-full bg-white/90 text-slate-600 backdrop-blur">
                     {product.category}
                   </span>
-                  {CE_SAFE_CATEGORIES.includes(product.category) && (
-                    <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 flex items-center gap-0.5"><ShieldCheck className="w-2.5 h-2.5" /> EU-Veilig &amp; Bundel-Topper</span>
+                  {product.inStock ? (
+                    <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500 text-white flex items-center gap-0.5"><PackageCheck className="w-2.5 h-2.5" /> Op voorraad (1-2 dagen)</span>
+                  ) : (
+                    <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-blue-500 text-white flex items-center gap-0.5"><Clock className="w-2.5 h-2.5" /> Rotterdam-drop aanvraag</span>
                   )}
                 </div>
               </div>
@@ -153,7 +155,7 @@ export default function ProductGrid({ filter, onProductClick }: Props) {
                 )}
 
                 <button
-                  disabled={isBlocked}
+                  disabled={isBlocked || !product.inStock}
                   onClick={(e) => {
                     e.stopPropagation();
                     if (product.sizes.length > 0 || product.colors.length > 0) {
@@ -163,11 +165,29 @@ export default function ProductGrid({ filter, onProductClick }: Props) {
                     }
                   }}
                   className={`mt-auto w-full py-2 rounded-lg text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 ${
-                    isBlocked ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-slate-900 hover:bg-orange-600 text-white'
+                    isBlocked ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : product.inStock ? 'bg-slate-900 hover:bg-orange-600 text-white' : 'bg-blue-100 text-blue-700 cursor-not-allowed'
                   }`}
                 >
-                  <ShoppingBag className="w-4 h-4" /> {isBlocked ? 'Niet beschikbaar' : 'Voeg toe aan Bundel'}
+                  <ShoppingBag className="w-4 h-4" /> {isBlocked ? 'Niet beschikbaar' : product.inStock ? 'Voeg toe aan Bundel' : 'Niet op voorraad'}
                 </button>
+                {!product.inStock && !isBlocked && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      addProcurementRequest({
+                        id: `req-${Date.now()}`,
+                        createdAt: new Date().toISOString(),
+                        customerName: customerUser?.name,
+                        customerEmail: customerUser?.email,
+                        items: [{ id: `bbi-${Date.now()}`, url: product.originalUrl, priceEur: chinedPrice, currency: 'EUR', photoDataUrl: '', detectedWeightKg: product.weightKg, detectedCategory: product.category, chinedAllInEur: chinedPrice, source: 'lookup-request' }],
+                        status: 'Nieuw',
+                      });
+                    }}
+                    className="mt-1.5 w-full py-2 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white transition-colors flex items-center justify-center gap-1.5"
+                  >
+                    <Clock className="w-3.5 h-3.5" /> Vraag aan voor Rotterdam-drop (vrijblijvend)
+                  </button>
+                )}
 
                 <a
                   href={product.merchant === '1688' ? `https://translate.google.com/translate?sl=zh-CN&tl=nl&u=${encodeURIComponent(product.originalUrl)}` : product.originalUrl}
