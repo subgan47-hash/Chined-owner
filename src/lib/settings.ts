@@ -127,10 +127,10 @@ Laatst bijgewerkt: 2026`,
   privacy: `## Privacybeleid (AVG) ChiNed
 
 **1. Verwerkte gegevens**
-ChiNed verwerkt: naam, e-mailadres, telefoonnummer, bezorgadres, bestelgeschiedenis en Community Fonds-bijdragen.
+ChiNed verwerkt: naam, e-mailadres, telefoonnummer, bezorgadres, bestelgeschiedenis en Retour-Spaarpot-bijdragen.
 
 **2. Doel van verwerking**
-Het uitvoeren van bestellingen, bezorging via PostNL, beheer van het Community Retourfonds en klantenservice.
+Het uitvoeren van bestellingen, bezorging via PostNL, beheer van de ChiNed Retour-Spaarpot en klantenservice.
 
 **3. Bewaartermijn**
 Bestelgegevens worden 7 jaar bewaard voor fiscale doeleinden. Accountgegevens worden bewaard zolang het account actief is.
@@ -147,7 +147,7 @@ Alle gegevens worden versleuteld opgeslagen. API-sleutels worden beveiligd opges
 Laatst bijgewerkt: 2026`,
   handbookAdmin: `# Beheerdershandboek
 
-Gebruik de tabs links als dagelijkse checklist. Tab 1 toont omzet, marge en volumes. Tab 2 beheert wisselkoers, vracht, de € 6,50 binnenlandse buffer, de minimale bundel van 6 items en de vier stads-schakelaars. Tab 3 beheert het Collectief Community Retourfonds en registreert retourverlies. Tab 4 exporteert inkooplijsten en beheert QC en de productcatalogus. Tab 5 scant CN-RTM-codes, sorteert op stad, postcode en wijkpunt en maakt labels. Tab 6 bevat koppelingen en betaalstromen. Tab 7 beheert juridische teksten, banners en prijsbewijs. Tab 8 is de boardroom-simulator.
+Gebruik de tabs links als dagelijkse checklist. Tab 1 toont omzet, marge en volumes. Tab 2 beheert wisselkoers, vracht, de € 6,50 binnenlandse buffer, de minimale bundel van 6 items en de vier stads-schakelaars. Tab 3 beheert de ChiNed Retour-Spaarpot en registreert retourverlies. Tab 4 exporteert inkooplijsten en beheert QC en de productcatalogus. Tab 5 scant CN-RTM-codes, sorteert op stad, postcode en wijkpunt en maakt labels. Tab 6 bevat koppelingen en betaalstromen. Tab 7 beheert juridische teksten, banners en prijsbewijs. Tab 8 is de boardroom-simulator.
 
 Werk dagelijks van Nieuw naar QC Goedgekeurd, naar Rotterdam en daarna naar bezorging. Controleer voor elke bundel het minimum van 6 items en noteer afwijkingen direct bij de order.
 

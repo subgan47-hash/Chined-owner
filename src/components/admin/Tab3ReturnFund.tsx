@@ -37,8 +37,8 @@ export default function Tab3ReturnFund() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Collectief Community Retourfonds Beheer</h1>
-          <p className="text-sm text-slate-500">Live ledger van het collectieve fonds.</p>
+          <h1 className="text-xl font-bold text-slate-900">ChiNed Retour-Spaarpot Beheer</h1>
+          <p className="text-sm text-slate-500">Live ledger van de collectieve spaarpot.</p>
         </div>
         <button onClick={() => setShowForm(!showForm)} className="px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-semibold">
           Retour afschrijving loggen
@@ -87,7 +87,7 @@ export default function Tab3ReturnFund() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <KpiCard icon={<TrendingUp className="w-5 h-5" />} title="Totale Inflow" value={formatEur(totalInflow)} sub={`Standaard: ${formatEur(inflowStandard)} · Kleding: ${formatEur(inflowClothing)}`} color="text-emerald-600 bg-emerald-50" />
         <KpiCard icon={<TrendingDown className="w-5 h-5" />} title="Afschrijvingen" value={formatEur(totalDepreciation)} sub={`${depreciation.length} retouren`} color="text-red-600 bg-red-50" />
-        <KpiCard icon={<Wallet className="w-5 h-5" />} title="Netto Fonds Balans" value={formatEur(netBalance)} sub="beschikbaar voor uitkering" color="text-blue-600 bg-blue-50" />
+        <KpiCard icon={<Wallet className="w-5 h-5" />} title="Netto Spaarpot Balans" value={formatEur(netBalance)} sub="beschikbaar voor uitkering" color="text-blue-600 bg-blue-50" />
         <KpiCard icon={<Percent className="w-5 h-5" />} title="Claim Ratio" value={`${claimRatio.toFixed(1)}%`} sub="van totale inleg" color="text-orange-600 bg-orange-50" />
       </div>
 
@@ -123,7 +123,7 @@ export default function Tab3ReturnFund() {
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-5">
-          <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2"><LogOut className="w-4 h-4 text-blue-600" /> Fonds Ledger (Recente mutaties)</h3>
+          <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2"><LogOut className="w-4 h-4 text-blue-600" /> Spaarpot Ledger (Recente mutaties)</h3>
           <div className="space-y-1.5 max-h-80 overflow-y-auto">
             {returnFundEntries.slice(0, 15).map(entry => (
               <div key={entry.id} className={`flex items-center justify-between text-xs p-2.5 rounded-lg ${entry.type === 'inflow' ? 'bg-emerald-50' : 'bg-red-50'}`}>

@@ -107,7 +107,7 @@ export default function Tab2Settings() {
           {local.firstOrderMaxPriceCapEnabled && <NumInput label="Max. Artikelprijs voor Eerste Bestelling (€)" value={local.firstOrderMaxPriceCap} onChange={v => update('firstOrderMaxPriceCap', v)} step={1} prefix="€" />}
         </Section>
 
-        <Section title="Community Retourfonds">
+        <Section title="ChiNed Retour-Spaarpot">
           <NumInput label="Inleg per standaard item" value={local.communityFundStandard} onChange={v => update('communityFundStandard', v)} step={0.05} prefix="€" />
           <NumInput label="Inleg per kleding item" value={local.communityFundClothing} onChange={v => update('communityFundClothing', v)} step={0.05} prefix="€" />
           <NumInput label="Shopcredit bonus (%)" value={local.shopCreditBonusPct} onChange={v => update('shopCreditBonusPct', v)} step={1} suffix="%" />

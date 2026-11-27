@@ -102,10 +102,10 @@ Since 1 November 2026 the EU applies a fixed €5.00 (excl. VAT) per parcel on d
             <h3 className="text-sm font-bold mb-3 flex items-center gap-2"><TrendingUp className="w-4 h-4 text-orange-400" /> Kernpropositie</h3>
             <ul className="text-xs text-slate-300 space-y-2">
               <li className="flex items-start gap-2"><Leaf className="w-3.5 h-3.5 text-emerald-400 mt-0.5 flex-shrink-0" /> 0% vervuilende zeevracht — 100% trein & lucht</li>
-              <li className="flex items-start gap-2"><Wallet className="w-3.5 h-3.5 text-orange-400 mt-0.5 flex-shrink-0" /> 0% retourverlies door Community Fonds</li>
+              <li className="flex items-start gap-2"><Wallet className="w-3.5 h-3.5 text-orange-400 mt-0.5 flex-shrink-0" /> 0% retourverlies door Retour-Spaarpot</li>
               <li className="flex items-start gap-2"><Package className="w-3.5 h-3.5 text-blue-400 mt-0.5 flex-shrink-0" /> B2B import via Rotterdam = geen EU-toeslagen</li>
               <li className="flex items-start gap-2"><Train className="w-3.5 h-3.5 text-emerald-400 mt-0.5 flex-shrink-0" /> PostNL last-mile partner met volumekorting</li>
-              <li className="flex items-start gap-2"><Users className="w-3.5 h-3.5 text-purple-400 mt-0.5 flex-shrink-0" /> Community-gedreven retourfonds = klantloyaliteit</li>
+              <li className="flex items-start gap-2"><Users className="w-3.5 h-3.5 text-purple-400 mt-0.5 flex-shrink-0" /> Retour-Spaarpot = klantloyaliteit</li>
             </ul>
           </div>
         </div>
@@ -124,14 +124,14 @@ Since 1 November 2026 the EU applies a fixed €5.00 (excl. VAT) per parcel on d
             <div className="space-y-4">
               <ChartBar label="Maandelijkse Nettowinst" value={totalNetProfit} max={totalNetProfit * 1.2} color="bg-emerald-500" formatV={formatEur} />
               <ChartBar label="Extra PostNL Winst" value={postnlExtraProfit} max={totalNetProfit} color="bg-orange-500" formatV={formatEur} />
-              <ChartBar label="Community Fonds Bespaard" value={returnFundSaved} max={returnFundInflow * 1.2} color="bg-purple-500" formatV={formatEur} />
+              <ChartBar label="Retour-Spaarpot Bespaard" value={returnFundSaved} max={returnFundInflow * 1.2} color="bg-purple-500" formatV={formatEur} />
               <ChartBar label="Consumentenbesparing" value={consumerSavings} max={consumerSavings * 1.2} color="bg-blue-500" formatV={formatEur} />
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
               <div className="bg-emerald-50 rounded-lg p-3 text-center">
                 <p className="text-xs text-emerald-700 font-medium">0% Retourverlies</p>
-                <p className="text-lg font-bold text-emerald-600">door Community Fonds</p>
+                <p className="text-lg font-bold text-emerald-600">door Retour-Spaarpot</p>
               </div>
               <div className="bg-blue-50 rounded-lg p-3 text-center">
                 <p className="text-xs text-blue-700 font-medium">Jaarlijkse Nettowinst</p>
@@ -177,7 +177,7 @@ Since 1 November 2026 the EU applies a fixed €5.00 (excl. VAT) per parcel on d
               <div className="flex-1 bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 text-center">
                 <Leaf className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
                 <p className="text-2xl font-bold text-emerald-400">0%</p>
-                <p className="text-xs text-slate-300">Retourverlies door Community Fonds</p>
+                <p className="text-xs text-slate-300">Retourverlies door Retour-Spaarpot</p>
               </div>
               <div className="flex-1 bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 text-center">
                 <TrendingUp className="w-8 h-8 text-orange-400 mx-auto mb-2" />
