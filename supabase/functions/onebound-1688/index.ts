@@ -6,8 +6,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const DEFAULT_KEY = "t_31647448998";
-const DEFAULT_SECRET = "89988a49";
 const API_BASE = "https://api-gw.onebound.cn/1688";
 
 // --- Translation helpers (MyMemory free API, no key required) ---
@@ -96,12 +94,12 @@ Deno.serve(async (req: Request) => {
     const itemId = String(body.item_id || url.searchParams.get("item_id") || "").trim();
     const action = String(body.action || url.searchParams.get("action") || "search");
 
-    let apiKey = DEFAULT_KEY;
-    let apiSecret = DEFAULT_SECRET;
-
-    // Load keys from Supabase settings if available
+    // Load keys from Supabase app_settings (saved by admin via Tab6)
     const supabaseUrl = Deno.env.get("SUPABASE_URL") || Deno.env.get("VITE_SUPABASE_URL");
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
+    let apiKey = "";
+    let apiSecret = "";
 
     if (supabaseUrl && serviceKey) {
       try {
@@ -117,8 +115,15 @@ Deno.serve(async (req: Request) => {
           if (s.oneboundSecret) apiSecret = String(s.oneboundSecret);
         }
       } catch {
-        // fall back to defaults
+        // settings lookup failed
       }
+    }
+
+    if (!apiKey || !apiSecret) {
+      return new Response(
+        JSON.stringify({ error: "OneBound API-sleutels niet geconfigureerd. Vul de OneBound Key en Secret in via Beheer > Tab 6 > API Keys." }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     // --- Action: item_get (single product by ID) ---

@@ -33,8 +33,8 @@ export const DEFAULT_SETTINGS: Settings = {
   returnPickupFee: 6.0,
   qcInstructionEn: 'QC MANDATORY CHECK: 1) Verify visible CE marking and EU manual on packaging for applicable items; reject immediately if missing. 2) Remove bulky shoeboxes/retail boxes and pack footwear/apparel tightly in polybags to minimize volumetric weight. 3) Take 2 clear QC photos (front + label) per item, remove Chinese invoices, and attach anonymous ChiNed barcode CN-RTM-XXXX. 4) SPACE OPTIMIZATION (NESTING): If an order contains a suitcase, backpack, or large storage box, pack smaller items (shoes in polybags, apparel, accessories) inside the hollow space to eliminate wasted volumetric weight.',
   explainerVideoUrl: '',
-  oneboundKey: 't_31647448998',
-  oneboundSecret: '89988a49',
+  oneboundKey: '',
+  oneboundSecret: '',
 };
 
 export const DEFAULT_PRICE_PROOFS: PriceProof[] = [

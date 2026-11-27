@@ -6,8 +6,10 @@ import { useState } from 'react';
 type TestStatus = 'idle' | 'success' | 'fail';
 
 export default function Tab6ApiKeys() {
-  const { apiKeys, updateApiKeys } = useStore();
+  const { apiKeys, updateApiKeys, settings, updateSettings } = useStore();
   const [local, setLocal] = useState<ApiKeyConfig>(apiKeys);
+  const [localOneboundKey, setLocalOneboundKey] = useState(settings.oneboundKey);
+  const [localOneboundSecret, setLocalOneboundSecret] = useState(settings.oneboundSecret);
   const [saved, setSaved] = useState(false);
   const [showKeys, setShowKeys] = useState<Record<string, boolean>>({});
   const [testStatus, setTestStatus] = useState<Record<string, TestStatus>>({});
@@ -16,6 +18,7 @@ export default function Tab6ApiKeys() {
 
   const handleSave = () => {
     updateApiKeys(local);
+    updateSettings({ oneboundKey: localOneboundKey, oneboundSecret: localOneboundSecret });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -39,10 +42,16 @@ export default function Tab6ApiKeys() {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
-        <Section title="Multi-Merchant Product & Sourcing APIs" icon={<KeyRound className="w-5 h-5" />}>
-          <ApiKeyField label="1688 Open Platform / RapidAPI" keyVal={local.merchant1688Key} endpoint={local.merchant1688Endpoint}
-            onKeyChange={v => update('merchant1688Key', v)} onEndpointChange={v => update('merchant1688Endpoint', v)}
-            show={showKeys['1688']} onToggle={() => toggleShow('1688')} onTest={() => testConnection('1688')} status={testStatus['1688']} />
+        <Section title="Multi-Merchant Product & Sourcing APIs" icon={<KeyRound className="w-5 h-5" />}>          <div className="space-y-2">
+            <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-2">
+              <p className="text-xs font-bold text-orange-800 mb-1">1688 Open Platform / OneBound</p>
+              <p className="text-[10px] text-orange-600">Deze sleutels worden opgeslagen in app_settings en direct door de onebound-1688 edge function gebruikt.</p>
+            </div>
+            <SecureInput label="OneBound API Key" value={localOneboundKey} onChange={setLocalOneboundKey}
+              show={showKeys['oneboundKey']} onToggle={() => toggleShow('oneboundKey')} onTest={() => testConnection('oneboundKey')} status={testStatus['oneboundKey']} />
+            <SecureInput label="OneBound Secret Key" value={localOneboundSecret} onChange={setLocalOneboundSecret}
+              show={showKeys['oneboundSecret']} onToggle={() => toggleShow('oneboundSecret')} onTest={() => testConnection('oneboundSecret')} status={testStatus['oneboundSecret']} />
+          </div>
           <ApiKeyField label="Shein Product API" keyVal={local.sheinKey} endpoint={local.sheinEndpoint}
             onKeyChange={v => update('sheinKey', v)} onEndpointChange={v => update('sheinEndpoint', v)}
             show={showKeys['shein']} onToggle={() => toggleShow('shein')} onTest={() => testConnection('shein')} status={testStatus['shein']} />
@@ -102,7 +111,7 @@ export default function Tab6ApiKeys() {
 
         <Section title="Status Overzicht" icon={<Building2 className="w-5 h-5" />}>
           <div className="space-y-2">
-            <StatusRow label="1688 API" status={testStatus['1688']} configured={!!local.merchant1688Key} />
+            <StatusRow label="OneBound (1688) API" status={testStatus['oneboundKey']} configured={!!localOneboundKey} />
             <StatusRow label="Shein API" status={testStatus['shein']} configured={!!local.sheinKey} />
             <StatusRow label="Temu API" status={testStatus['temu']} configured={!!local.temuKey} />
             <StatusRow label="AliExpress API" status={testStatus['aliexpress']} configured={!!local.aliexpressKey} />
